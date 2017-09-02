@@ -2,9 +2,9 @@
 ## '##' 为注释符号，代表此行被忽略
 
 ## 并行流底层线程数
-java.util.concurrent.ForkJoinPool.common.parallelism = 4
+java.util.concurrent.ForkJoinPool.common.parallelism = 2
 
 ## areaCode = 86 可选 默认国内
-## userID = 186xxxxxxxx
-## password = xxxx
+## userID = 13240257247
+## password = 1qaz@WSXXq
 ## rememberMe = true 可选 默认开启

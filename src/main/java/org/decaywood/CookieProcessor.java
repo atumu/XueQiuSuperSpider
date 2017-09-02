@@ -1,10 +1,12 @@
 package org.decaywood;
 
 import org.decaywood.utils.FileLoader;
+import org.decaywood.utils.MD5Utils;
 import org.decaywood.utils.RequestParaBuilder;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * @author: decaywood
@@ -31,12 +33,15 @@ public interface CookieProcessor {
                     (HttpURLConnection) new URL(website).openConnection() : connection;
             connection.connect();
 
-            String cookie = connection.getHeaderFields().get("Set-Cookie")
-                    .stream()
-                    .map(x -> x.split(";")[0].concat(";"))
-                    .filter(x -> x.contains("token=") || x.contains("s="))
-                    .reduce("", String::concat);
-            FileLoader.updateCookie(cookie, website);
+            List<String> cookies = connection.getHeaderFields().get("Set-Cookie");
+            if (cookies != null) {
+                String cookie = cookies
+                        .stream()
+                        .map(x -> x.split(";")[0].concat(";"))
+                        .filter(x -> x.contains("token=") || x.contains("s="))
+                        .reduce("", String::concat);
+                FileLoader.updateCookie(cookie, website);
+            }
         } finally {
             if (connection != null) connection.disconnect();
         }
@@ -55,8 +60,8 @@ public interface CookieProcessor {
 
         RequestParaBuilder builder = new RequestParaBuilder("http://xueqiu.com/user/login")
                 .addParameter("areacode", areacode)
-                .addParameter("telephone", userID)
-                .addParameter("password", passwd)
+                .addParameter("username", userID)
+                .addParameter("password", MD5Utils.parseStrToMd5U32(passwd))
                 .addParameter("remember_me", rememberMe ? "on" : "off");
 
         URL url = new URL(builder.build());
